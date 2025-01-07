@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { auth, signOut, signIn} from "@auth/client";
+import { auth, signOut, signIn} from "@/auth";
 import React from 'react'
 
 const Navbar = async () => {
@@ -43,4 +43,4 @@ const Navbar = async () => {
   )
 }
 
-export default Navbar
+export default Navbar;
