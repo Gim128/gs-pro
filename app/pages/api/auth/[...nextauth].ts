@@ -9,7 +9,7 @@ import { signIn } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import Email from "next-auth/providers/email";
 
-export const authOptions = {
+export default NextAuth ({
     providers : [
         Google({
             clientId: process.env.GOOGLE_ID,
@@ -21,15 +21,16 @@ export const authOptions = {
                 Email: {label: "Email", type: "text", placeholder: "Email"},
                 password: {label: "Password", type: "password"} 
             },
-            authorize: async (credentials) => {
-                // handle custom email/passsword auth logic
-                const user = {id: 1, Email: credentials?.Email};
-                if (user) {
-                    return user;
-                } else {
-                    return null;
+            async authorize(credentials) {
+                // Add logic to verify user credentials
+                if(
+                    credentials?.Email === 'test@example.com' &&
+                    credentials.password === 'password'
+                ){
+                    return { id: '1', name: 'Test User', email: 'test@example.com' };
                 }
-            },
+                return null;
+            }
          }),
     ],
     session: {
@@ -41,8 +42,8 @@ export const authOptions = {
         signOut: "/auth/signout",
         error: "/auth/error",
         verifyRequest: "/auth/verify-request",
-        newUser: null,
+        // newUser: null,
     },
-}
+    secret:process.env.NEXTAUTH_SECRET,
+});
 
-export default NextAuth(authOptions);
