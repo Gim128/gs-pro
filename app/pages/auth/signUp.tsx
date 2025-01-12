@@ -60,7 +60,7 @@ const signup = () => {
                             placeholder="Enter First Name"
                             />
                             {errors.firstName && (
-                                <p className="text-sm text-red-500">{errors.firstName.message}</p>
+                                <p className="text-sm text-red-500">{String(errors.firstName.message)}</p>
                             )}
                     </div>
 
@@ -76,8 +76,8 @@ const signup = () => {
                             className={`w-full px-3 py-2 border rounded focus:outline-none ${errors.lastName ? "border-rfed-500" : "border-gray-300"}`}
                             placeholder="Enter Last Name"
                             />
-                            {errors.lastName && (
-                                <p className="text-sm text-red-500">{errors.lastName.message}</p>
+                            {errors.lastName?.message && (
+                                <p className="text-sm text-red-500">{String(errors.lastName.message)}</p>
                             )}
                     </div>
 
@@ -92,7 +92,7 @@ const signup = () => {
                         placeholder="Enter Password"
                         />
                         {errors.password && (
-                            <p className="text-sm text-red-500">{errors.password.message}</p>
+                            <p className="text-sm text-red-500">{String(errors.password.message)}</p>
                         )}
                     </div>
 
@@ -106,8 +106,8 @@ const signup = () => {
                         className={`w-full px-3 py-2 border rounded focus:outline-none ${errors.confirmPassword ? "border-red-500" : "border-gray-300"}`}
                         placeholder="COnfirm Your Password"
                         />
-                        {errors.password && (
-                            <p className="text-sm text-red-500">{errors.confirmPassword.message}</p>
+                            {errors.confirmPassword && (
+                            <p className="text-sm text-red-500">{String(errors.confirmPassword.message)}</p>
                         )}
                     </div>
 
