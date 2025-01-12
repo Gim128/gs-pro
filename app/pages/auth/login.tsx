@@ -4,15 +4,22 @@ import router, {useRouter} from 'next/router'
 import Google from 'next-auth/providers/google'
 import { Head } from 'next/document';
 import { title } from 'process';
+import React from 'react';
 
-const Login = () => {
+
+interface LoginFormInput {
+  email: string;
+  password: string;
+}
+
+const Login: React.FC = () => {
   const router = useRouter();
   const {
     register,
     handleSubmit,
     // watch,
     formState: {errors}
-  } = useForm();
+  } = useForm<LoginFormInput>();
 
 
   const onSubmit = async (data:any) => {
@@ -40,6 +47,10 @@ const Login = () => {
       console.error('Sign in failed: ', error);
     } 
   };
+
+  const handleForgotPassword = async () => {
+    router.push('/auth/forgot-password');
+  }
 
   return (
     <>
@@ -113,6 +124,17 @@ const Login = () => {
                     {errors.password && (
                         <p className="text-sm text-red-500">{String(errors.password.message)}</p>
                     )}
+                </div>
+
+                {/* Forgot Password */}
+                <div className='flex justify-end'>
+                    <button
+                      type="button"
+                      className="text-sm text-blue-500 hover:underline"
+                      onClick={handleForgotPassword}
+                    >
+                      Forgot Password?
+                    </button>
                 </div>
 
                 {/* Submit Button */}
