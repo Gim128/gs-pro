@@ -130,7 +130,7 @@ const Login: React.FC = () => {
                 <div className='flex justify-end'>
                     <button
                       type="button"
-                      className="text-sm text-blue-500 hover:underline"
+                      className="text-sm text-blue-500 hover:underline" 
                       onClick={handleForgotPassword}
                     >
                       Forgot Password?
