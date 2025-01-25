@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 export const OrderSummary: React.FC = () => {
   const [quantities, setQuantities] = useState([1, 1, 1]);
@@ -13,10 +13,13 @@ export const OrderSummary: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">Order Summary</h2>
+      <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
       <div className="space-y-4">
         {[1, 2, 3].map((item, index) => (
-          <div key={index} className="flex justify-between items-center">
+          <div
+            key={index}
+            className="flex justify-between items-center bg-gray-50 p-3 rounded-lg shadow-sm"
+          >
             <div className="flex items-center">
               <img
                 src={`/gas-cylinder-${index + 1}.png`} // Example image path
@@ -24,21 +27,21 @@ export const OrderSummary: React.FC = () => {
                 className="w-12 h-12 rounded-lg"
               />
               <div className="ml-4">
-                <p>Gas Type {index + 1}</p>
-                <p className="text-gray-500">RS. 500</p>
+                <p className="text-sm font-semibold">Gas Type {index + 1}</p>
+                <p className="text-sm text-gray-500">RS. 500</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => updateQuantity(index, -1)}
-                className="px-3 py-1 bg-gray-200 rounded-lg"
+                className="px-3 py-1 bg-gray-300 rounded-lg"
               >
                 -
               </button>
               <span>{quantities[index]}</span>
               <button
                 onClick={() => updateQuantity(index, 1)}
-                className="px-3 py-1 bg-gray-200 rounded-lg"
+                className="px-3 py-1 bg-blue-500 text-white rounded-lg"
               >
                 +
               </button>
