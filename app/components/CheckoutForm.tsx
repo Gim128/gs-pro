@@ -50,3 +50,5 @@ export const CheckoutForm: React.FC = () => {
         </div>
     );
 };
+
+export default CheckoutForm;

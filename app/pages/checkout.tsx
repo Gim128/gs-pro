@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import { CheckoutForm } from "../components/CheckoutForm";
-import { PaymemtMethod } from "../components/PaymemtMethod";
+import PaymemtMethods from "../components/PaymentMethods";
 import OrderSummery from "../components/OrderSummery";
 
 const Checkout: React.FC = () => {
@@ -10,7 +10,7 @@ const Checkout: React.FC = () => {
                 {/* left */}
                 <div className="flex-1">
                     <CheckoutForm />
-                    {/* <PaymemtMethod /> */}
+                    <PaymemtMethods />
                 </div>
                 {/* right */}
                 <div className="flex-1">
