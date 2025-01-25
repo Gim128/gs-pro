@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import { CheckoutForm } from "../components/CheckoutForm";
-import { OrderSummery } from "../components/OrderSummery";
 import { PaymemtMethod } from "../components/PaymemtMethod";
+import OrderSummery from "../components/OrderSummery";
 
 const Checkout: React.FC = () => {
     return (
