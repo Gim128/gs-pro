@@ -1,52 +1,19 @@
-import {
-    SidebarInset,
-    SidebarProvider,
-    SidebarTrigger,
-} from "@/components/ui/sidebar"
-import {AppSidebar} from "@/components/app-sidebar";
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator
-} from "@/components/ui/breadcrumb";
-import {Separator} from "@radix-ui/react-menu";
+import {Button} from "@/components/ui/button";
+import ToastProvider from "@/components/ToastProvider";
 
 export default function Home() {
-  return (
-      <SidebarProvider>
-          <AppSidebar />
-          <SidebarInset>
-              <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-                  <div className="flex items-center gap-2 px-4">
-                      <SidebarTrigger className="-ml-1" />
-                      <Separator orientation="vertical" className="mr-2 h-4" />
-                      <Breadcrumb>
-                          <BreadcrumbList>
-                              <BreadcrumbItem className="hidden md:block">
-                                  <BreadcrumbLink href="#">
-                                      Building Your Application
-                                  </BreadcrumbLink>
-                              </BreadcrumbItem>
-                              <BreadcrumbSeparator className="hidden md:block" />
-                              <BreadcrumbItem>
-                                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                              </BreadcrumbItem>
-                          </BreadcrumbList>
-                      </Breadcrumb>
-                  </div>
-              </header>
-              <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-                  <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                      <div className="aspect-video rounded-xl bg-muted/50" />
-                      <div className="aspect-video rounded-xl bg-muted/50" />
-                      <div className="aspect-video rounded-xl bg-muted/50" />
-                  </div>
-                  <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-              </div>
-          </SidebarInset>
-      </SidebarProvider>
-  );
+    return (
+        <div className='flex flex-col gap-4 justify-center items-center h-svh text-lg'>
+            Hi there, Welcome to GasDistro Inc.
+            <Button variant="outline" className="">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="800px" height="800px" viewBox="0 0 1920 1920">
+                    <g>
+                        <path d="M451.823 1807.059h1185.883c31.203 0 56.47-25.25 56.47-56.47V169.411c0-31.221-25.267-56.47-56.47-56.47H451.823V0h1185.883c93.561 0 169.411 75.798 169.411 169.412v1581.176c0 93.614-75.85 169.412-169.411 169.412H451.823v-112.941Z" fillRule="nonzero"/>
+                        <path d="M225.941 0v1920h112.941V0zm993.081 1016.47H564.76V903.53h654.262L976.6 661.106l79.861-79.861L1435.216 960l-378.755 378.754-79.861-79.861z"/>
+                    </g>
+                </svg>
+                Let's Begin
+            </Button>
+        </div>
+    );
 }
