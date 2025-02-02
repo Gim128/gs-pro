@@ -65,7 +65,12 @@ export default {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		backgroundImage:{
+			  bannerImg:"url('/main/main_bg.png')",
+			blackOverlay:
+				"linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%)",
+		}
   	}
   },
   plugins: [require("tailwindcss-animate")],
