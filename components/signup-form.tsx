@@ -17,7 +17,7 @@ export async function SignupForm({
 
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
-            <Card>
+            <Card className='bg-white/95'>
                 <CardHeader className="">
                     <CardTitle className="text-xl">Create an Account</CardTitle>
                     <CardDescription>
