@@ -52,7 +52,7 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
@@ -154,6 +154,28 @@ const data = {
       icon: Map,
     },
   ],
+  platformMains: [
+    {
+      name: "New Request (Gas)",
+      url: "/dashboard/request",
+      icon: Frame,
+    },
+    {
+      name: "My Tokens",
+      url: "/dashboard/my-tokens",
+      icon: PieChart,
+    },
+    {
+      name: "notifications",
+      url: "/dashboard/delivery-planning",
+      icon: Map,
+    },
+    {
+      name: "Help",
+      url: "/dashboard/token-management",
+      icon: Map,
+    },
+  ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -163,6 +185,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
+        <NavProjects projects={data.platformMains} />
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
       </SidebarContent>
