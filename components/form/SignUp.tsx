@@ -1,5 +1,5 @@
 'use client'
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {useRouter} from "next/navigation";
@@ -9,11 +9,8 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/
 import {zodResolver} from "@hookform/resolvers/zod";
 import Link from "next/link";
 import {ClipLoader} from "react-spinners";
-import {doRegister, doValidation} from "@/app/actions/auth-actions";
-import {V_CODE} from "@/types/enum";
+import {doRegister} from "@/app/actions/auth-actions";
 import * as z from "zod";
-
-
 
 
 const SignUp = () => {
@@ -26,9 +23,9 @@ const SignUp = () => {
         lastName: z.string().trim().min(1, {message: "Last Name must be at least 1 character long"})
             .max(20, {message: "Last Name must be at most 20 characters long"}),
         email: z.string().email('Invalid Email address').refine(async (email) => {
-            console.log(lastCheckedEmailRef.current,'this is lastchecked email')
-            console.log(email,"current email")
-            const temp = lastCheckedEmailRef.current ;
+            console.log(lastCheckedEmailRef.current, 'this is lastchecked email')
+            console.log(email, "current email")
+            const temp = lastCheckedEmailRef.current;
             lastCheckedEmailRef.current = email;
             const success = z.string().email().safeParse(email).success;
             if ((success && temp !== email && form.formState.isSubmitting) || (success && temp !== email)) {
@@ -58,12 +55,12 @@ const SignUp = () => {
             message: "This email is already associated with an account"
         }),
         phoneNumber: z.string().regex(new RegExp("^(?:7|0|(?:\\+94))[0-9]{9,10}$"), {message: "invalid Phone Number"}).refine(async mobile => {
-                console.log(lastCheckedPhoneRef.current,'this is lastchecked phone')
-                console.log(mobile,"current email")
+                console.log(lastCheckedPhoneRef.current, 'this is lastchecked phone')
+                console.log(mobile, "current email")
                 const temp = lastCheckedPhoneRef.current;
                 lastCheckedPhoneRef.current = mobile;
                 const success = z.string().regex(new RegExp("^(?:7|0|(?:\\+94))[0-9]{9,10}$")).safeParse(mobile).success;
-                if ((success && temp !== mobile &&  form.formState.isSubmitting) || (success && temp !== mobile)) {
+                if ((success && temp !== mobile && form.formState.isSubmitting) || (success && temp !== mobile)) {
                     try {
                         const response = await fetch(`http://localhost:8080/gas-distro/api/v1/auth/validate-mobile?mobile=${mobile}`, {
                             method: "GET",
@@ -106,8 +103,8 @@ const SignUp = () => {
 
     const form = useForm<SignUpFrom>({
         resolver: zodResolver(signUpSchema),
-      /*  reValidateMode:"onChange",
-        mode:'onChange',*/
+        /*  reValidateMode:"onChange",
+          mode:'onChange',*/
         defaultValues: {
             firstName: "",
             lastName: "",
@@ -125,7 +122,7 @@ const SignUp = () => {
             toast.success("Account has been created successfully")
             router.push("/auth/login")
         } catch (e) {
-            console.log(e,'this is for register error')
+            console.log(e, 'this is for register error')
         }
     };
 
@@ -201,7 +198,7 @@ const SignUp = () => {
                             <FormField
                                 control={form.control}
                                 name="email"
-                                render={({field,fieldState }) => (
+                                render={({field, fieldState}) => (
                                     <FormItem>
                                         <FormLabel>Email</FormLabel>
                                         <FormControl>
@@ -219,7 +216,7 @@ const SignUp = () => {
                             <FormField
                                 control={form.control}
                                 name="phoneNumber"
-                                render={({field,fieldState }) => (
+                                render={({field, fieldState}) => (
                                     <FormItem>
                                         <FormLabel>Phone Number</FormLabel>
                                         <FormControl>
@@ -271,7 +268,7 @@ const SignUp = () => {
                         </div>
                         <Button type="submit" className="w-full col-span-2 mt-4" disabled={form.formState.isSubmitting}>
                             {form.formState.isSubmitting ? (
-                                <ClipLoader size={20} color="#fff" />
+                                <ClipLoader size={20} color="#fff"/>
                             ) : (
                                 "Sign Up"
                             )}

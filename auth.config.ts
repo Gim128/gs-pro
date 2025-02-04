@@ -130,16 +130,21 @@ async function refreshAccessToken(token) {
     try {
 
         console.log("Beaarer token", `Bearer ${token.refreshToken}`);
+        const payload = {
+            refreshToken:token.refreshToken
+        }
 
-        const response = await fetch(`${process.env.API_SERVER_BASE_URL}/api/auth/refresh`, {
+        const response = await fetch(`${process.env.API_SERVER_BASE_URL}/api/v1/auth/refresh-token`, {
+            method:"POST",
             headers: {
-                "Authorization": `Bearer ${token.refreshToken}`
-            }
+                "Authorization": `Bearer ${token.refreshToken}`,
+                "Content-Type": "application/json",
+            },
+            body:JSON.stringify(payload)
         });
 
         console.log(response);
         if (!response.ok) {
-            alert(response.status)
             throw new Error(`Response status: ${response.status}`);
         }
         const tokens = await response.json();
