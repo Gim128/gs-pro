@@ -2,7 +2,6 @@
 
 import {signIn} from "@/auth";
 import {SignUpFrom} from "@/types/Types";
-import {V_CODE} from "@/types/enum";
 
 export const doLogin = async (formData: FormData): Promise<string> => {
     return new Promise(async (resolve, reject): Promise<string> => {
@@ -33,7 +32,7 @@ export const doRegister = async (data: SignUpFrom) => {
             console.log(uri)
             const payload = {
                 ...data,
-                userRoles: [1]
+                userRoles: [2]
             }
             delete payload.confirmPassword;
             console.log(payload, 'this is payload')
@@ -55,37 +54,7 @@ export const doRegister = async (data: SignUpFrom) => {
     })
 }
 
-/*export const doEmailValidation = async (email: string) => {
-    return new Promise(async (resolve, reject) => {
-            let url = `${process.env.API_SERVER_BASE_URL}/api/v1/auth/validate-email?email=${email}`
-            console.log(url, 'this is url')
-            try {
-                const response = await fetch(url, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    }
-                })
-                const parsedRes = await response.json();
-                console.log(parsedRes, 'this is par')
-                console.log(typeof parsedRes, parsedRes);
-                if (response.ok)
-                    resolve(parsedRes)
-                if (response.status == 400)
-                    reject(new Error(parsedRes.message))
-
-            } catch (e) {
-                reject({
-                    message: "unexpected error occurred",
-                    data: {isTaken: true}
-                })
-                console.log(e.message);
-            }
-        }
-    )
-}*/
-
-export const doValidation = async (data: string, code: V_CODE) => {
+/*export const doValidation = async (data: string, code: V_CODE) => {
     return new Promise(async (resolve, reject) => {
 
             let current;
@@ -128,5 +97,5 @@ export const doValidation = async (data: string, code: V_CODE) => {
             }
         }
     )
-}
+}*/
 

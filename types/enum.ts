@@ -1,4 +1,5 @@
-export enum V_CODE {
-    EMAIL = 'EMAIL',
-    MOBILE = 'MOBILE'
+export enum SYS_ROLES{
+    ROLE_OUTLET_ADMIN = "ROLE_OT_ADMIN",
+    ROLE_USER = 'ROLE_USER',
+    ROLE_HDO_ADMIN ='ROLE_HDO_ADMIN'
 }
