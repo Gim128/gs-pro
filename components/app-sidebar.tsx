@@ -4,12 +4,14 @@ import {
     AudioWaveform,
     BadgePlus,
     Bell,
-    BriefcaseBusiness, ClipboardMinus,
+    BriefcaseBusiness, CircleCheckBig,
+    ClipboardMinus,
     Command,
     GalleryVerticalEnd,
-    HeartHandshake,
+    HeartHandshake, Megaphone,
     PackageSearch,
-    RefreshCcw, Store,
+    RefreshCcw,
+    Store,
     Tag,
     Truck,
     Users,
@@ -136,6 +138,67 @@ const data = {
             url: "/dashboard/settings",
             icon: Store,
             permission: [SYS_ROLES.ROLE_OUTLET_ADMIN]
+        },
+        // end of the outlet manager permissions
+        /*
+      * beginning of the head office manager permissions
+      * please add your new permissions related to head office manager here
+      */
+        {
+            title: "Outlet Coordination",
+            url: "/dashboard/hd/outlets",
+            icon: Store,
+            permission: [SYS_ROLES.ROLE_HDO_ADMIN],
+            items: [
+                {
+                    title: "View All Outlets",
+                    url: "/dashboard/hd/outlets",
+                },
+                {
+                    title: "New Outlet",
+                    url: "/dashboard/hd/outlets/new",
+                },
+            ]
+        },
+        {
+            title: "Employee Management",
+            url: "/dashboard/hd/employee",
+            icon: Users,
+            permission: [SYS_ROLES.ROLE_HDO_ADMIN],
+            items: [
+                {
+                    title: "View All Employee",
+                    url: "/dashboard/hd/employee",
+                },
+                {
+                    title: "Add New Employee",
+                    url: "/dashboard/hd/employee/new",
+                },
+            ]
+        },
+        {
+            title: "Stock Management",
+            url: "/dashboard/hd/stock",
+            icon: PackageSearch,
+            permission: [SYS_ROLES.ROLE_HDO_ADMIN]
+        },
+        {
+            title: "Dispatch Tracking",
+            url: "/dashboard/hd/dispatch",
+            icon: CircleCheckBig,
+            permission: [SYS_ROLES.ROLE_HDO_ADMIN]
+        },
+        {
+            title: "Reports/Analytics",
+            url: "/dashboard/hd/reports",
+            icon: ClipboardMinus,
+            permission: [SYS_ROLES.ROLE_HDO_ADMIN]
+        },
+        {
+            title: "System Alerts",
+            url: "/dashboard/hd/alerts",
+            icon: Megaphone,
+            permission: [SYS_ROLES.ROLE_HDO_ADMIN]
         },
     ],
 }

@@ -54,10 +54,10 @@ export function NavMain({
                         <SidebarMenuItem>
                             {!item?.items &&
                                 <SidebarMenuButton asChild>
-                                    <a href={item.url}>
+                                    <Link href={item.url}>
                                         {item.icon && <item.icon/>}
                                         <span>{item.title}</span>
-                                    </a>
+                                    </Link>
                                 </SidebarMenuButton>
                             }
                             {item?.items &&
