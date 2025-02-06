@@ -102,10 +102,15 @@ export const authConfig = {
                 token.accessTokenExpires,
                 new Date(token.accessTokenExpires)
             );
+            const date = new Date(token.accessTokenExpires);
+            const formattedDateWithOptions = date.toLocaleString('en-US');
+            console.log("Formatted Current Time in Local Time Zone:", formattedDateWithOptions);
             if (Date.now() < token.accessTokenExpires) {
+
                 console.log("**** returning previous token ******");
                 return token;
             }
+
 
             // Access token has expired, try to update it
             console.log("**** Update Refresh token ******");
