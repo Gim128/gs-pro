@@ -1,6 +1,6 @@
 'use server';
 
-import {signIn} from "@/auth";
+import {signIn, signOut} from "@/auth";
 import {SignUpFrom} from "@/types/Types";
 
 export const doLogin = async (formData: FormData): Promise<string> => {
@@ -52,6 +52,10 @@ export const doRegister = async (data: SignUpFrom) => {
             reject(e.message);
         }
     })
+}
+
+export async function doLogout() {
+    await signOut({ redirectTo: "/" });
 }
 
 /*export const doValidation = async (data: string, code: V_CODE) => {
