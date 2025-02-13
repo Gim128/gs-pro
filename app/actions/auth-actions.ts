@@ -1,10 +1,15 @@
 'use server';
 
-import {signIn} from "@/auth";
+import {signIn, signOut} from "@/auth";
 import {SignUpFrom} from "@/types/Types";
+import {AuthError} from "@auth/core/errors";
 
-export const doLogin = async (formData: FormData): Promise<string> => {
-    return new Promise(async (resolve, reject): Promise<string> => {
+
+type SignInError = {
+    message: string
+};
+export const doLogin = async (formData: FormData): Promise<SignInError> => {
+    return new Promise(async (resolve, reject) => {
         try {
             console.log(formData, 'this is form data')
             const username = formData.get("username");
@@ -14,13 +19,20 @@ export const doLogin = async (formData: FormData): Promise<string> => {
                 email: username,
                 password: password
             });
-            resolve("Successfull Authenticated");
+            resolve({message: 'Successfully authenticated'});
         } catch (error) {
-            if (error.code)
-                reject(error.message);
-            else
-                reject("Something went wrong");
-            console.log(error.message, ' hist is the error')
+            if (error instanceof AuthError) {
+                switch (error.code) {
+                    case 403: {
+                        reject(error.message)
+                        break;
+                    }
+                    default:
+                        reject(error.message);
+                        return;
+                }
+            }
+            reject("Something went wrong, please try again!")
         }
     })
 };
@@ -31,8 +43,7 @@ export const doRegister = async (data: SignUpFrom) => {
             const uri = `${process.env.API_SERVER_BASE_URL}/api/v1/auth/register`;
             console.log(uri)
             const payload = {
-                ...data,
-                userRoles: [2]
+                ...data
             }
             delete payload.confirmPassword;
             console.log(payload, 'this is payload')
@@ -52,6 +63,10 @@ export const doRegister = async (data: SignUpFrom) => {
             reject(e.message);
         }
     })
+}
+
+export async function doLogout() {
+    await signOut({redirectTo: "/"});
 }
 
 /*export const doValidation = async (data: string, code: V_CODE) => {
