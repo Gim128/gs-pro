@@ -1,21 +1,32 @@
 'use client'
-import React, {useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {useRouter} from "next/navigation";
-import {toast} from 'react-toastify';
 import {useForm} from "react-hook-form";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import Link from "next/link";
 import {ClipLoader} from "react-spinners";
 import {doRegister} from "@/app/actions/auth-actions";
 import * as z from "zod";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import {cn} from "@/lib/utils";
+import {Check, ChevronsUpDown} from "lucide-react";
+import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
+import {useToast} from "@/hooks/use-toast";
+import {fetchAllEmployees} from "@/app/actions/employee-actions";
+import {ToastAction} from "@/components/ui/toast";
+import {fetchAllOutlets} from "@/app/actions/outlet-actions";
 
 
 const EmployeeRegistration = () => {
+    const {toast} = useToast()
+    const [outlets, setOutlets] = useState([]);
+    const [open, setOpen] = useState(false);
+
     const lastCheckedEmailRef = useRef<string | null>(null);
     const lastCheckedPhoneRef = useRef<string | null>(null);
+
 
     const signUpSchema = z.object({
         firstName: z.string().trim().min(1, {message: "First Name must be at least 1 character long"})
@@ -90,6 +101,9 @@ const EmployeeRegistration = () => {
             {
                 message: "This phone number is already registered"
             }),
+        outletId:z.number(),
+        userType:z.number(),
+        userRoles:z.array(z.number()),
         password: z.string().min(8, {message: "Password must be at least 8 character long"}),
         confirmPassword: z.string()
     }).refine((data) => {
@@ -110,16 +124,40 @@ const EmployeeRegistration = () => {
             lastName: "",
             email: "",
             phoneNumber: "",
+            outletId:"",
+            userType:2,
+            userRoles:[2],
             password: "",
             confirmPassword: ""
         },
     });
     const router = useRouter();
 
+    const getAllOutlets = async () => {
+        try {
+            const result = await fetchAllOutlets(); // Ensure result is an array of {label, value}
+            setOutlets(result.map((outlet) => ({label: `${outlet.name}`, value: outlet.outletId}))); // Transform API response
+        } catch (e) {
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: "There was a problem with fetching employees.",
+                action: <ToastAction altText="Try again">Try again</ToastAction>,
+            })
+        }
+    };
+
+    useEffect(() => {
+        void getAllOutlets()
+    }, []);
     const handleSubmit = async (values: SignUpFrom) => {
         try {
             const response = await doRegister(values);
-            toast.success("Account has been created successfully")
+            toast({
+                variant: "default",
+                title: "Success!",
+                description: "Account has been created successfully",
+            })
             router.push("/auth/login")
         } catch (e) {
             console.log(e, 'this is for register error')
@@ -130,8 +168,8 @@ const EmployeeRegistration = () => {
         <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)}>
                 <div className="grid gap-6">
-                    <div className="grid grid-cols-2 gap-2">
-                        <div className='col-span-2 md:col-span-1'>
+                    <div className="grid grid-cols-3 gap-2">
+                        <div className='col-span-3 md:col-span-1'>
                             <FormField
                                 control={form.control}
                                 name="firstName"
@@ -149,7 +187,7 @@ const EmployeeRegistration = () => {
                                 )}
                             />
                         </div>
-                        <div className='col-span-2 md:col-span-1'>
+                        <div className='col-span-3 md:col-span-1'>
                             <FormField
                                 control={form.control}
                                 name="lastName"
@@ -167,7 +205,7 @@ const EmployeeRegistration = () => {
                                 )}
                             />
                         </div>
-                        <div className='col-span-2 md:col-span-1'>
+                        <div className='col-span-3 md:col-span-1'>
                             <FormField
                                 control={form.control}
                                 name="email"
@@ -185,7 +223,7 @@ const EmployeeRegistration = () => {
                                 )}
                             />
                         </div>
-                        <div className='col-span-2 md:col-span-1'>
+                        <div className='col-span-3 md:col-span-1'>
                             <FormField
                                 control={form.control}
                                 name="phoneNumber"
@@ -203,7 +241,71 @@ const EmployeeRegistration = () => {
                                 )}
                             />
                         </div>
-                        <div className='col-span-2 md:col-span-1'>
+                        <div className='col-span-3 md:col-span-2 lg:col-span-1'>
+                            <FormField
+                                control={form.control}
+                                name="outletId"
+                                render={({field}) => (
+                                    <FormItem className="flex flex-col space-y-3.5">
+                                        <FormLabel>Outlet</FormLabel>
+                                        <Popover open={open} onOpenChange={setOpen}>
+                                            <PopoverTrigger asChild>
+                                                <FormControl>
+                                                    <Button
+                                                        variant="outline"
+                                                        role="combobox"
+                                                        className={cn(
+                                                            "justify-between",
+                                                            !field.value && "text-muted-foreground"
+                                                        )}
+                                                    >
+                                                        {field.value
+                                                            ? outlets.find((outlet) => outlet.value === field.value)?.label
+                                                            : "Select outlet"}
+                                                        <ChevronsUpDown className="opacity-50"/>
+                                                    </Button>
+                                                </FormControl>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="p-0 w-[--radix-popover-trigger-width]">
+                                                <Command>
+                                                    <CommandInput placeholder="Search district..." className="h-9"/>
+                                                    <CommandList>
+                                                        {outlets.length === 0 ? (
+                                                            <CommandEmpty>No Outlets found.</CommandEmpty>
+                                                        ) : (
+                                                            <CommandGroup>
+                                                                {outlets.map((outlet) => (
+                                                                    <CommandItem
+                                                                        value={outlet.label}
+                                                                        key={outlet.value}
+                                                                        onSelect={() => {
+                                                                            form.setValue("outletId", outlet.value);
+                                                                            setOpen(false)
+                                                                        }}
+                                                                    >
+                                                                        {outlet.label}
+                                                                        <Check
+                                                                            className={cn(
+                                                                                "ml-auto",
+                                                                                outlet.value === field.value
+                                                                                    ? "opacity-100"
+                                                                                    : "opacity-0"
+                                                                            )}
+                                                                        />
+                                                                    </CommandItem>
+                                                                ))}
+                                                            </CommandGroup>
+                                                        )}
+                                                    </CommandList>
+                                                </Command>
+                                            </PopoverContent>
+                                        </Popover>
+                                        <FormMessage className='text-xs'/>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        <div className='col-span-3 md:col-span-1'>
                             <FormField
                                 control={form.control}
                                 name="password"
@@ -221,7 +323,7 @@ const EmployeeRegistration = () => {
                                 )}
                             />
                         </div>
-                        <div className='col-span-2 md:col-span-1'>
+                        <div className='col-span-3 md:col-span-1'>
                             <FormField
                                 control={form.control}
                                 name="confirmPassword"
@@ -239,15 +341,20 @@ const EmployeeRegistration = () => {
                                 )}
                             />
                         </div>
-                        <Button type="submit" className="w-full col-span-2 mt-4" disabled={form.formState.isSubmitting}>
-                            {form.formState.isSubmitting ? (
-                                <ClipLoader size={20} color="#fff"/>
-                            ) : (
-                                "Create"
-                            )}
-                        </Button>
+
+                        <div className='col-span-3 flex justify-end'>
+                            <Button type="submit" className="w-1/12 col-span-2 mt-4"
+                                    disabled={form.formState.isSubmitting} size={"sm"}>
+                                {form.formState.isSubmitting ? (
+                                    <ClipLoader size={20} color="#fff"/>
+                                ) : (
+                                    "Create"
+                                )}
+                            </Button>
+                        </div>
                     </div>
                 </div>
+
             </form>
         </Form>
     );

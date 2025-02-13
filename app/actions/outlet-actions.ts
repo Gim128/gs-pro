@@ -1,8 +1,9 @@
 'use server';
 
 import {fetchClient} from "@/lib/fetch-client";
+import {Outlet} from "@/types/Types";
 
-export const fetchAllOutlets = async () => {
+export const fetchAllOutlets = async ():Promise<Outlet[]> => {
     try {
         const response = await fetchClient(`${process.env.API_SERVER_BASE_URL}/api/v1/outlets`, {
             method: "GET",

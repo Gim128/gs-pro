@@ -11,6 +11,8 @@ import Link from "next/link";
 import {ClipLoader} from "react-spinners";
 import {doRegister} from "@/app/actions/auth-actions";
 import * as z from "zod";
+import {useToast} from "@/hooks/use-toast";
+import {ToastAction} from "@/components/ui/toast";
 
 
 const SignUp = () => {
@@ -90,6 +92,8 @@ const SignUp = () => {
             {
                 message: "This phone number is already registered"
             }),
+        userType:z.number(),
+        userRoles:z.array(z.number()),
         password: z.string().min(8, {message: "Password must be at least 8 character long"}),
         confirmPassword: z.string()
     }).refine((data) => {
@@ -110,16 +114,23 @@ const SignUp = () => {
             lastName: "",
             email: "",
             phoneNumber: "",
+            userType:1,
+            userRoles:[3],
             password: "",
             confirmPassword: ""
         },
     });
     const router = useRouter();
+    const {toast} = useToast();
 
     const handleSubmit = async (values: SignUpFrom) => {
         try {
             const response = await doRegister(values);
-            toast.success("Account has been created successfully")
+            toast({
+                variant: "default",
+                title: "Awesome! Everything worked perfectly!",
+                description: "Account has been created successfully"
+            })
             router.push("/auth/login")
         } catch (e) {
             console.log(e, 'this is for register error')
@@ -141,7 +152,12 @@ const SignUp = () => {
                   Login with Apple
                 </Button>*/}
                         <Button type={"button"} variant="outline" className="w-full" size="sm"
-                                onClick={() => toast.warning("Not supported yet")}>
+                                onClick={() => toast({
+                                    variant: "destructive",
+                                    title: "Uh oh! Something went wrong.",
+                                    description: "This feature is not supported yet",
+                                    action: <ToastAction altText="Try again">Try again</ToastAction>,
+                                })}>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path
                                     d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"

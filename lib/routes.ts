@@ -7,6 +7,7 @@ export const PUBLIC_ROUTES = [
     '/auth/signup',
     '/api/auth/callback/google',
     '/api/auth/callback/github',
+    '/access-denied'
 ]
 
 export const PROTECTED_SUB_ROUTES = [

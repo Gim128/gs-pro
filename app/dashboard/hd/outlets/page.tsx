@@ -1,16 +1,14 @@
 import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow} from '@/components/ui/table';
 import React from 'react';
 import {fetchAllOutlets} from "@/app/actions/outlet-actions";
-import {toast} from "react-toastify";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
-import SignUp from "@/components/form/SignUp";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 
 const Page = async () => {
     let outlets;
     try {
         outlets = await fetchAllOutlets();
     } catch (e) {
-        toast.error("Unable to complete the fetching")
+
     }
     return (
             <Card className='bg-white/95'>
@@ -22,22 +20,22 @@ const Page = async () => {
                         <TableCaption>A list of current available outlets</TableCaption>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-[50px]">Outlet Id</TableHead>
+                                <TableHead className="w-[50px]">Id</TableHead>
                                 {/*<TableHead className="w-[50px]">District Id</TableHead>*/}
-                                <TableHead >District Name</TableHead>
-                                <TableHead>Outlet Name</TableHead>
+                                <TableHead >District</TableHead>
+                                <TableHead>Name</TableHead>
                                 <TableHead>Address</TableHead>
                                 <TableHead>Contact No</TableHead>
-                                <TableHead>Total Capacity</TableHead>
-                                <TableHead>Reserved Count</TableHead>
-                                <TableHead>Available Count</TableHead>
+                                <TableHead>Capacity</TableHead>
+                                <TableHead>Reserved</TableHead>
+                                <TableHead>Available</TableHead>
                                 <TableHead>Created At</TableHead>
                                 <TableHead>Updated At</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {
-                                outlets && outlets.map(outlet=>(
+                                !!outlets && outlets.map(outlet=>(
                                     <TableRow key={outlet.outletId}>
                                         <TableCell className="font-medium">{outlet.outletId}</TableCell>
                                         {/*<TableCell>{outlet.districtId}</TableCell>*/}
