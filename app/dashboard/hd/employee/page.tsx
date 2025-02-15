@@ -44,7 +44,7 @@ const Page = async () => {
                                     <TableCell>{employee.email}</TableCell>
                                     <TableCell>{employee.dob}</TableCell>
                                     <TableCell>{employee.phone_number}</TableCell>
-                                    <TableCell>{new Date(employee.createdAt).toLocaleString()}</TableCell>
+                                    <TableCell>{new Date(employee.created_at).toLocaleString()}</TableCell>
                                 </TableRow>
                             ))
                         }

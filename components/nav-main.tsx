@@ -44,6 +44,7 @@ export function NavMain({
             <SidebarGroupLabel>{section}</SidebarGroupLabel>
             <SidebarMenu>
                 {items.map((item) => {
+                    if(item.url === "/dashboard") return
                     if (!item.permission.some(item => user.roles.includes(item))) return;
                     return (<Collapsible
                         key={item.title}

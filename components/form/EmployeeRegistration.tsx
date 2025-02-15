@@ -158,7 +158,6 @@ const EmployeeRegistration = () => {
                 title: "Success!",
                 description: "Account has been created successfully",
             })
-            router.push("/auth/login")
         } catch (e) {
             console.log(e, 'this is for register error')
         }
