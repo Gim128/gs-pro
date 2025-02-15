@@ -68,6 +68,7 @@ export default {
   		},
 		backgroundImage:{
 			  bannerImg:"url('/main/main_bg.png')",
+			  ou_bannerImg:"url('/outlet/24p01fin.png')",
 			blackOverlay:
 				"linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%)",
 		}

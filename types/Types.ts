@@ -13,6 +13,18 @@ export type Outlet ={
     employees: number[];
 }
 
+export type UserOutlet = {
+    id: number;
+    name: string;
+    address: string;
+    contact_no: string;
+    capacity: number;
+    reserved_count: number;
+    available_count: number;
+    created_at: string;
+    district: string;
+}
+
 export type DecodedAccessToken = {
     sub: string;
     iat: number;

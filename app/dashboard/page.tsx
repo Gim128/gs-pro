@@ -1,7 +1,7 @@
 import React from "react";
 import {auth} from "@/auth";
 import {jwtDecode} from "jwt-decode";
-import OutletAdminContent from "@/components/dashboard/OutletAdminContent";
+import OutletAdminContent from "@/components/dashboard/outlet/OutletAdminContent";
 import HeadOfficeAdminContent from "@/components/dashboard/HeadOfficeAdminContent";
 import UserContent from "@/components/dashboard/UserContent";
 import {DecodedAccessToken} from "@/types/Types";
@@ -14,7 +14,7 @@ export default async function Page() {
     // console.log(session,'this is the session on dashboard on the server')
     return (
         <section>
-            <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+            <div>
                 {
                     authority === 'ROLE_OT_ADMIN' && <OutletAdminContent/>
                 }
