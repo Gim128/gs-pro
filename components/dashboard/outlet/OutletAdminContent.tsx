@@ -3,7 +3,7 @@ import getDecodedToken from "@/lib/lib";
 import {fetchAllOutletsByUser} from "@/app/actions/outlet-actions";
 import {Card} from "@/components/ui/card";
 import OutletPicker from "@/components/dashboard/outlet/OutletPicker";
-import Image from "next/image";
+import {SessionProvider} from "next-auth/react";
 
 const OutletAdminContent = async () => {
     const session = await auth();
@@ -17,11 +17,12 @@ const OutletAdminContent = async () => {
     return (
         <section>
             <Card className='relative px-4 py-3 h-[30svh]  bg-ou_bannerImg bg-no-repeat' style={{
-                backgroundPosition:"bottom right",
+                backgroundPosition: "bottom right",
                 backgroundSize: ' 100%'
             }}>
-
-                    <OutletPicker outlets={outlets} />
+                <SessionProvider>
+                    <OutletPicker outlets={outlets}/>
+                </SessionProvider>
             </Card>
         </section>
     );

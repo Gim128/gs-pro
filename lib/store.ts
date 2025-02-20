@@ -28,19 +28,23 @@ export const useStore = create<State & Actions>()(persist((set) => ({
                     available_count: 0,
                     created_at: '',
                     district: ''
-                }, currentUserId: -1
+                },
+                currentUserId: -1
             },
             updateSelectedOutlet: (outlet) => set(state => ({
                 outletManagerSlice: {
                     ...state.outletManagerSlice, selectedOutlet: outlet
                 }
             })),
-            updateCurrentUserId: () => {
-            }
+            updateCurrentUserId: (userId) => set(state => ({
+                outletManagerSlice: {
+                    ...state.outletManagerSlice, currentUserId: userId
+                }
+            }))
         }),
         {
             name:'application-store',
-            
+            skipHydration:true
         }
     )
 )

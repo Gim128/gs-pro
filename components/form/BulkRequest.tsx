@@ -7,54 +7,64 @@ import {ClipLoader} from "react-spinners";
 import {z} from "zod";
 import {FieldValues, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {createNewOutlet} from "@/app/actions/outlet-actions";
+import {requestNewBulk} from "@/app/actions/outlet-actions";
 import {ToastAction} from "@/components/ui/toast";
 import {toast} from "@/hooks/use-toast";
 import {useStore} from "@/lib/store";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import {cn} from "@/lib/utils";
+import {format} from "date-fns";
+import {CalendarIcon} from "lucide-react";
+import {Calendar} from "@/components/ui/calendar"
+import {Textarea} from "@/components/ui/textarea";
 
 const BulkRequest = () => {
 
-    const outletManagerSlice= useStore(state => state.outletManagerSlice)
-    console.log(outletManagerSlice,'this is the outletManager Slice')
+    const outletManagerSlice = useStore(state => state.outletManagerSlice)
 
-    useEffect(()=>{
+    useEffect(() => {
         useStore.persist?.rehydrate()
-    },[])
+    }, [])
 
     const NewBulkRequestSchema = z.object({
-        districtId: z.number({message: 'District is required'}),
-        name: z.string().nonempty("Name is required"),
-        address: z.string().nonempty("Address is required"),
-        contactNo: z.string().nonempty("Contact Number is required").regex(new RegExp("^(?:7|0|(?:\\+94))[0-9]{9,10}$"), {message: "invalid Phone Number"}),
-        capacity: z.string()
+        outletId: z.number(),
+        userId: z.number(),
+        quantity: z.number({message: "quantity is required"}),
+        description: z.string().optional(),
+        deliveryScheduledDate: z.date(),
+        status: z.string()
     });
     type newOutletForm = z.infer<typeof NewBulkRequestSchema>;
     const form = useForm<newOutletForm>({
         resolver: zodResolver(NewBulkRequestSchema),
         defaultValues: {
-            districtId: "",
-            name: "",
-            address: "",
-            contactNo: "",
-            capacity: "50"
+            outletId: outletManagerSlice.selectedOutlet.id,
+            userId: outletManagerSlice.currentUserId,
+            quantity: 100,
+            description: "",
+            deliveryScheduledDate:new Date(new Date().setDate(new Date().getDate() + 1)),
+            status: 'Pending'
         },
     });
 
-    const handleSubmit = async (data: FieldValues) => {
-        let payload = {...data}
+    useStore.persist.onFinishHydration((state) => {
+        form.setValue("outletId", state.outletManagerSlice.selectedOutlet.id)
+        form.setValue("userId", state.outletManagerSlice.currentUserId)
+    })
 
+    const handleSubmit = async (data: FieldValues) => {
         try {
-            await createNewOutlet(payload);
+            await requestNewBulk(data);
             toast({
                 variant: "default",
                 title: "Awesome! Everything worked perfectly!",
-                description: "New outlet has been created successfully"
+                description: "Your request has been recorded successfully"
             })
         } catch (e) {
             toast({
                 variant: "destructive",
                 title: "Uh oh! Something went wrong.",
-                description: "There was a problem with creating outlet.",
+                description: "There was a problem with requesting new bulk.",
                 action: <ToastAction altText="Try again">Try again</ToastAction>,
             })
         }
@@ -68,129 +78,82 @@ const BulkRequest = () => {
                         <div className='col-span-3 md:col-span-2 lg:col-span-1'>
                             <FormField
                                 control={form.control}
-                                name="name"
+                                name="quantity"
                                 render={({field}) => (
                                     <FormItem>
-                                        <FormLabel>Outlet Name</FormLabel>
+                                        <FormLabel>Quantity of the bulk</FormLabel>
                                         <FormControl>
-                                            <Input type="text" {...field} />
+                                            <Input type="number" {...field}
+                                                   onChange={(e) => field.onChange(Number(e.target.value))}/>
                                         </FormControl>
                                         <FormMessage className='text-xs'/>
                                     </FormItem>
                                 )}
                             />
                         </div>
-                        {/*            <div className='col-span-3 md:col-span-2 lg:col-span-1'>
+                        <div className='col-span-3 md:col-span-2 lg:col-span-1'>
                             <FormField
                                 control={form.control}
-                                name="districtId"
+                                name="deliveryScheduledDate"
                                 render={({field}) => (
                                     <FormItem className="flex flex-col space-y-3.5">
-                                        <FormLabel>District</FormLabel>
-                                        <Popover open={open} onOpenChange={setOpen}>
+                                        <FormLabel>Delivery Scheduled Date</FormLabel>
+                                        <Popover>
                                             <PopoverTrigger asChild>
                                                 <FormControl>
                                                     <Button
-                                                        variant="outline"
-                                                        role="combobox"
+                                                        variant={"outline"}
                                                         className={cn(
-                                                            "justify-between",
+                                                            "w-[288px] pl-3 text-left font-normal",
                                                             !field.value && "text-muted-foreground"
                                                         )}
                                                     >
-                                                        {field.value
-                                                            ? districts.find((district) => district.value === field.value)?.label
-                                                            : "Select district"}
-                                                        <ChevronsUpDown className="opacity-50"/>
+                                                        {field.value ? (
+                                                            format(field.value, "PPP")
+                                                        ) : (
+                                                            <span>Pick a date</span>
+                                                        )}
+                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50"/>
                                                     </Button>
                                                 </FormControl>
                                             </PopoverTrigger>
-                                            <PopoverContent className="p-0 w-[--radix-popover-trigger-width]">
-                                                <Command>
-                                                    <CommandInput placeholder="Search district..." className="h-9"/>
-                                                    <CommandList>
-                                                        {districts.length === 0 ? (
-                                                            <CommandEmpty>No districts found.</CommandEmpty>
-                                                        ) : (
-                                                            <CommandGroup>
-                                                                {districts.map((district) => (
-                                                                    <CommandItem
-                                                                        value={district.label}
-                                                                        key={district.value}
-                                                                        onSelect={() => {
-                                                                            console.log("on select fired")
-                                                                            form.setValue("districtId", district.value);
-                                                                            form.trigger(["districtId"])
-                                                                            setOpen(false)
-                                                                        }}
-                                                                    >
-                                                                        {district.label}
-                                                                        <Check
-                                                                            className={cn(
-                                                                                "ml-auto",
-                                                                                district.value === field.value
-                                                                                    ? "opacity-100"
-                                                                                    : "opacity-0"
-                                                                            )}
-                                                                        />
-                                                                    </CommandItem>
-                                                                ))}
-                                                            </CommandGroup>
-                                                        )}
-                                                    </CommandList>
-                                                </Command>
+                                            <PopoverContent className="p-0" align="start">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={field.value}
+                                                    onSelect={field.onChange}
+                                                    disabled={(date) =>
+                                                        date < new Date() || date < new Date("1900-01-01")
+                                                    }
+                                                    initialFocus
+                                                />
                                             </PopoverContent>
                                         </Popover>
-                                        <FormMessage className='text-xs'/>
-                                    </FormItem>
-                                )}
-                            />
-                        </div>*/}
-                        <div className='col-span-3 md:col-span-2 lg:col-span-1'>
-                            <FormField
-                                control={form.control}
-                                name="address"
-                                render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel>Address</FormLabel>
-                                        <FormControl>
-                                            <Input type="text" {...field} />
-                                        </FormControl>
-                                        <FormMessage className='text-xs'/>
+                                        <FormMessage/>
                                     </FormItem>
                                 )}
                             />
                         </div>
-                        <div className='col-span-3 md:col-span-2 lg:col-span-1'>
+                        <div className='col-span-3'>
                             <FormField
                                 control={form.control}
-                                name="contactNo"
+                                name="description"
                                 render={({field}) => (
                                     <FormItem>
-                                        <FormLabel>Contact Number</FormLabel>
+                                        <FormLabel>Description</FormLabel>
                                         <FormControl>
-                                            <Input type="text" {...field} />
+                                            <Textarea
+                                                placeholder="Tell head office a little bit about your request"
+                                                className="resize-none"
+                                                {...field}
+                                            />
                                         </FormControl>
-                                        <FormMessage className='text-xs'/>
+                                        <FormMessage/>
                                     </FormItem>
                                 )}
                             />
                         </div>
-                        <div className='col-span-3 md:col-span-2 lg:col-span-1'>
-                            <FormField
-                                control={form.control}
-                                name="capacity"
-                                render={({field}) => (
-                                    <FormItem>
-                                        <FormLabel>Capacity</FormLabel>
-                                        <FormControl>
-                                            <Input type="number" {...field} />
-                                        </FormControl>
-                                        <FormMessage className='text-xs'/>
-                                    </FormItem>
-                                )}
-                            />
-                        </div>
+
                         <div className='col-span-3 flex justify-end gap-3'>
                             <Button type="reset" className="w-1/2 md:w-1/12 self-end col-span-2 mt-4"
                                     onClick={() => form.reset()}
