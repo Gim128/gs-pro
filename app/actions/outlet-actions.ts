@@ -78,3 +78,25 @@ export const fetchAllOutletsByUser = async (userId:number):Promise<UserOutlet[]>
         throw new Error(e.message || 'An error occurred while fetching outlets'); // Reject with a proper error message
     }
 };
+export const requestNewBulk = async (data):Promise<UserOutlet[]> => {
+    try {
+        const response = await fetchClient(`${process.env.API_SERVER_BASE_URL}/api/v1/bulk-request`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body:JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.errorMessage || 'Failed to request new bulk');
+        }
+
+        const result = await response.json();
+        return result.data; // Resolve with the data
+    } catch (e) {
+        console.error('Error requesting new bulk :', e);
+        throw new Error(e.message || 'An error occurred while requesting a new bulk'); // Reject with a proper error message
+    }
+};
