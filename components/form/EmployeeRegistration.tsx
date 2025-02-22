@@ -124,7 +124,7 @@ const EmployeeRegistration = () => {
             lastName: "",
             email: "",
             phoneNumber: "",
-            outletId:"",
+            outletId:-1,
             userType:2,
             userRoles:[2],
             password: "",
@@ -258,7 +258,7 @@ const EmployeeRegistration = () => {
                                                             !field.value && "text-muted-foreground"
                                                         )}
                                                     >
-                                                        {field.value
+                                                    {field.value !== -1 && field.value
                                                             ? outlets.find((outlet) => outlet.value === field.value)?.label
                                                             : "Select outlet"}
                                                         <ChevronsUpDown className="opacity-50"/>
@@ -278,7 +278,7 @@ const EmployeeRegistration = () => {
                                                                         value={outlet.label}
                                                                         key={outlet.value}
                                                                         onSelect={() => {
-                                                                            form.setValue("outletId", outlet.value);
+                                                                            form.setValue("outletId", Number(outlet.value));
                                                                             setOpen(false)
                                                                         }}
                                                                     >

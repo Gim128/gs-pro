@@ -9,10 +9,6 @@ import {useSession} from "next-auth/react";
 import {jwtDecode} from "jwt-decode";
 import {data} from "@/lib/data/paths";
 
-
-// This is sample data.
-
-
 export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
 
     const {data: session, update} = useSession() // useSession()
@@ -22,15 +18,14 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
         data.user.name = !!decodedToken?.sub ? decodedToken.sub : "demo user";
         data.user.roles = decodedToken.authorities;
     }
+
     return (
         <Sidebar collapsible="icon" {...props}>
             <SidebarHeader>
                 <TeamSwitcher teams={data.teams}/>
             </SidebarHeader>
             <SidebarContent>
-                {/*<NavProjects projects={data.platformMains}/>*/}
                 <NavMain items={data.navMains} section={"Platform Mains"} user={data.user}/>
-                {/*<NavProjects projects={data.projects}/>*/}
             </SidebarContent>
             <SidebarFooter>
                 <NavUser user={data.user}/>

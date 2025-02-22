@@ -35,7 +35,14 @@ export default auth(async function middleware(req: NextRequest) {
     if (session) {
 
         const decodedAccessToken: DecodedAccessToken = jwtDecode(session?.accessToken);
-        const find = data.navMains.find(feature => feature.url == nextUrl.pathname);
+        const find = data.navMains.find(feature => {
+            if (feature?.items){
+                if(feature.items.some(item=>item.url == nextUrl.pathname))
+                    return feature;
+            }
+           if (feature.url == nextUrl.pathname)
+               return feature;
+        });
         console.log(find, 'this is the found object');
         console.log(nextUrl.pathname,'this is path name')
         console.log(decodedAccessToken,'this is token')

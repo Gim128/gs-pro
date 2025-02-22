@@ -93,8 +93,12 @@ export const data = {
             permission: [SYS_ROLES.ROLE_OUTLET_ADMIN],
             items: [
                 {
+                    title: "Bulk Requests",
+                    url: "/dashboard/stock/bulk",
+                },
+                {
                     title: "New Bulk Request",
-                    url: "/dashboard/stock/new-bulk",
+                    url: "/dashboard/stock/bulk/new",
                 },
             ],
         },
@@ -167,9 +171,15 @@ export const data = {
         },
         {
             title: "Stock Management",
-            url: "/dashboard/hd/stock",
-            icon: PackageSearch,
-            permission: [SYS_ROLES.ROLE_HDO_ADMIN]
+            url: "/dashboard/hd/employee",
+            icon: Users,
+            permission: [SYS_ROLES.ROLE_HDO_ADMIN],
+            items: [
+                {
+                    title: "Bulk Requests",
+                    url: "/dashboard/hd/stock/bulk-request",
+                },
+            ]
         },
         {
             title: "Dispatch Tracking",

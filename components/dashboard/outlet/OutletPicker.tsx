@@ -9,33 +9,43 @@ import {cn} from "@/lib/utils";
 import {useStore} from "@/lib/store";
 import {useSession} from "next-auth/react";
 import {jwtDecode} from "jwt-decode";
-import {data} from "@/lib/data/paths";
 
 const OutletPicker = ({outlets}: { outlets: UserOutlet[] }) => {
+
     const previousSelectedOutlet = useStore(state => state.outletManagerSlice.selectedOutlet)
     const updateSelectedOutletOnState = useStore(state => state.updateSelectedOutlet)
     const updateCurrentUserId = useStore(state => state.updateCurrentUserId)
+
     const [open, setOpen] = useState(false);
     const [selectedOutlet, setSelectedOutlet] = useState<UserOutlet>(
         previousSelectedOutlet.id !== -1 ? previousSelectedOutlet : outlets[0]
     );
-    const {data: session, update} = useSession() // useSession()
-    if (session) {
-        let decodedToken = jwtDecode(session?.accessToken);
-        updateCurrentUserId(decodedToken.userId);
-    }
+
+    const {data: session, update} = useSession();
+
+    useEffect(() => {
+        if (session) {
+            let decodedToken = jwtDecode(session?.accessToken);
+            updateCurrentUserId(decodedToken.userId);
+        }
+    }, []);
+
+    useEffect(() => {
+        useStore.persist?.rehydrate()
+        updateSelectedOutletOnState(selectedOutlet)
+    }, []);
 
     function updateSelectedOutlet(outlet: UserOutlet) {
         setSelectedOutlet(outlet);
         updateSelectedOutletOnState(outlet);
     }
 
-    useEffect(() => {
-        useStore.persist?.rehydrate()
-        if (previousSelectedOutlet.id !== -1)
-            setSelectedOutlet(previousSelectedOutlet)
-        updateSelectedOutletOnState(selectedOutlet)
-    }, [])
+    useStore.persist.onFinishHydration((state) => {
+        setSelectedOutlet(prevState => ({
+            ...prevState,
+            ...state.outletManagerSlice.selectedOutlet
+        }))
+    })
 
     return (
         <div className='relative grid grid-cols-2 w-full text-lg items-center z-50 '>
