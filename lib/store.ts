@@ -1,22 +1,42 @@
-import {create} from "zustand";
-import {persist} from "zustand/middleware";
-import {UserOutlet} from "@/types/Types";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { UserOutlet } from "@/types/Types";
+
+export type UserProfile = {
+    id: number;
+    username: string;
+    firstname: string;
+    lastname: string;
+    user_type_id: number;
+    dob: string;  // Stored as string in Zustand
+    email: string;
+    phone_number: string;
+};
+
 
 export type OutletManagerSlice = {
-    selectedOutlet: UserOutlet
-    currentUserId: number
-}
+    selectedOutlet: UserOutlet;
+    currentUserId: number;
+};
+
+export type UserProfileSlice = {
+    currentUser: UserProfile;
+};
 
 export type State = {
-    outletManagerSlice: OutletManagerSlice
-}
+    outletManagerSlice: OutletManagerSlice;
+    userProfileSlice: UserProfileSlice;
+};
 
 export type Actions = {
-    updateSelectedOutlet: (outlet:UserOutlet) => void,
-    updateCurrentUserId: (id: number) => void
-}
+    updateSelectedOutlet: (outlet: UserOutlet) => void;
+    updateCurrentUserId: (id: number) => void;
+    updateUserProfile: (profile: UserProfile) => void;
+};
 
-export const useStore = create<State & Actions>()(persist((set) => ({
+export const useStore = create<State & Actions>()(
+    persist(
+        (set) => ({
             outletManagerSlice: {
                 selectedOutlet: {
                     id: -1,
@@ -31,20 +51,43 @@ export const useStore = create<State & Actions>()(persist((set) => ({
                 },
                 currentUserId: -1
             },
-            updateSelectedOutlet: (outlet) => set(state => ({
-                outletManagerSlice: {
-                    ...state.outletManagerSlice, selectedOutlet: outlet
+            userProfileSlice: {
+                currentUser: {
+                    id: -1,
+                    username: '',
+                    firstname: '',
+                    lastname: '',
+                    user_type_id: 0,
+                    dob: '',
+                    email: '',
+                    phone_number: ''
                 }
-            })),
-            updateCurrentUserId: (userId) => set(state => ({
-                outletManagerSlice: {
-                    ...state.outletManagerSlice, currentUserId: userId
-                }
-            }))
+            },
+            updateSelectedOutlet: (outlet) =>
+                set((state) => ({
+                    outletManagerSlice: {
+                        ...state.outletManagerSlice,
+                        selectedOutlet: outlet
+                    }
+                })),
+            updateCurrentUserId: (userId) =>
+                set((state) => ({
+                    outletManagerSlice: {
+                        ...state.outletManagerSlice,
+                        currentUserId: userId
+                    }
+                })),
+            updateUserProfile: (profile) =>
+                set((state) => ({
+                    userProfileSlice: {
+                        ...state.userProfileSlice,
+                        currentUser: profile
+                    }
+                }))
         }),
         {
-            name:'application-store',
-            skipHydration:true
+            name: 'application-store',
+            skipHydration: true
         }
     )
-)
+);

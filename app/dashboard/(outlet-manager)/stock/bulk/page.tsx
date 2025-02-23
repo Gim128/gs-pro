@@ -3,7 +3,7 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {fetchAllEmployees} from "@/app/actions/employee-actions";
 
-const Page = () => {
+const Page = async () => {
     let requests;
     try {
         requests = await fetchAllEmployees();
