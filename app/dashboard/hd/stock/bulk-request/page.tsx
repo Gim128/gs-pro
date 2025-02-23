@@ -4,6 +4,7 @@ import {Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Table
 import {fetchAllBulkRequests} from "@/app/actions/outlet-actions";
 import {cn} from "@/lib/utils";
 import BulkStatusPicker from "@/components/dashboard/outlet/BulkStatusPicker";
+import {headers} from "next/headers";
 
 const BulkRequests = async () => {
     let bulkRequests;

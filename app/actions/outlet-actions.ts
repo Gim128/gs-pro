@@ -167,3 +167,26 @@ export const getOutletBulkRequests = async (outletId:number) => {
         throw new Error(e.message || 'An error occurred while updating request status'); // Reject with a proper error message
     }
 };
+export const addOutletTokenStatus = async (outletId:number,requestId:number,availableCount:number,path:string) => {
+    try {
+        const response = await fetchClient(`${process.env.API_SERVER_BASE_URL}/api/v1/bulk-request/status?outletId=${outletId}&bulkRequestId=${requestId}&availableCount=${availableCount}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.errorMessage || 'Failed to fetch request');
+        }
+
+        const result = await response.json();
+        console.log(path,'thsi is the path on server')
+        revalidatePath(path)
+        return result; // Resolve with the data
+    } catch (e) {
+        console.error('Error updating request status:', e);
+        throw new Error(e.message || 'An error occurred while updating request status'); // Reject with a proper error message
+    }
+};
