@@ -94,7 +94,7 @@ export const data = {
             items: [
                 {
                     title: "Bulk Requests",
-                    url: "/dashboard/stock/bulk",
+                    url: "/dashboard/stock/bulk/{outletId}",
                 },
                 {
                     title: "New Bulk Request",

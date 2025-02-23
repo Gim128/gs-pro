@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/sidebar"
 import Link from "next/link";
 import {SYS_ROLES} from "@/types/enum";
+import {useStore} from "../lib/store";
 
 export function NavMain({
                             items,
@@ -39,12 +40,15 @@ export function NavMain({
         }[]
     }[]
 }) {
+
+    const selectedOutletFromStore = useStore(state => state.outletManagerSlice.selectedOutlet)
+
     return (
         <SidebarGroup>
             <SidebarGroupLabel>{section}</SidebarGroupLabel>
             <SidebarMenu>
                 {items.map((item) => {
-                    if(item.url === "/dashboard") return
+                    if (item.url === "/dashboard") return
                     if (!item.permission.some(item => user.roles.includes(item))) return;
                     return (<Collapsible
                         key={item.title}
@@ -73,15 +77,20 @@ export function NavMain({
                                     </CollapsibleTrigger>
                                     <CollapsibleContent>
                                         <SidebarMenuSub>
-                                            {item.items?.map((subItem) => (
-                                                <SidebarMenuSubItem key={subItem.title}>
+                                            {item.items?.map((subItem) => {
+                                                let nestedUrl = subItem.url
+                                                console.log(subItem)
+                                                if (subItem.url.includes('{outletId}')) {
+                                                    nestedUrl = subItem.url.replace('{outletId}', selectedOutletFromStore.id)
+                                                }
+                                                return (<SidebarMenuSubItem key={subItem.title}>
                                                     <SidebarMenuSubButton asChild>
-                                                        <Link href={subItem.url}>
+                                                        <Link href={nestedUrl}>
                                                             <span>{subItem.title}</span>
                                                         </Link>
                                                     </SidebarMenuSubButton>
-                                                </SidebarMenuSubItem>
-                                            ))}
+                                                </SidebarMenuSubItem>)
+                                            })}
                                         </SidebarMenuSub>
                                     </CollapsibleContent>
                                 </>
