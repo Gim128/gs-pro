@@ -146,10 +146,10 @@ export const updateBulkRequestStatus = async ({id, status}: {id: number, status:
     }
 };
 
-export const getOutletBulkReqeusts = async (outletId:number) => {
+export const getOutletBulkRequests = async (outletId:number) => {
     try {
-        const response = await fetchClient(`${process.env.API_SERVER_BASE_URL}/api/v1/bulk-request/${id}/status?status=${status}`, {
-            method: "PATCH",
+        const response = await fetchClient(`${process.env.API_SERVER_BASE_URL}/api/v1/bulk-request/outlet/${outletId}`, {
+            method: "GET",
             headers: {
                 "Content-Type": "application/json",
             }
@@ -161,7 +161,7 @@ export const getOutletBulkReqeusts = async (outletId:number) => {
         }
 
         const result = await response.json();
-        return result.date; // Resolve with the data
+        return result.data; // Resolve with the data
     } catch (e) {
         console.error('Error updating request status:', e);
         throw new Error(e.message || 'An error occurred while updating request status'); // Reject with a proper error message

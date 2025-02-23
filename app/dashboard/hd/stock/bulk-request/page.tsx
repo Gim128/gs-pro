@@ -22,16 +22,16 @@ const BulkRequests = async () => {
                     <TableCaption>A list of bulk requests from outlets</TableCaption>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-[50px]">Id</TableHead>
-                            {/*<TableHead className="w-[50px]">District Id</TableHead>*/}
-                            <TableHead>Scheduled Date</TableHead>
-                            <TableHead>Description</TableHead>
-                            <TableHead>Quantity</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Outlet</TableHead>
-                            <TableHead>User</TableHead>
-                            <TableHead>Created At</TableHead>
-                            <TableHead align={'center'}>Action</TableHead>
+                                <TableHead className="w-[50px]">Id</TableHead>
+                                {/*<TableHead className="w-[50px]">District Id</TableHead>*/}
+                                <TableHead>Scheduled Date</TableHead>
+                                <TableHead>Description</TableHead>
+                                <TableHead>Quantity</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead>Outlet</TableHead>
+                                <TableHead>Created User</TableHead>
+                                <TableHead>Created At</TableHead>
+                                <TableHead align={'center'}>Action</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
