@@ -28,7 +28,7 @@ const OutletPicker = ({outlets}: { outlets: UserOutlet[] }) => {
             let decodedToken = jwtDecode(session?.accessToken);
             updateCurrentUserId(decodedToken.userId);
         }
-    }, []);
+    }, [session]);
 
     useEffect(() => {
         useStore.persist?.rehydrate()
