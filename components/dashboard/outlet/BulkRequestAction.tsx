@@ -18,7 +18,6 @@ interface BulkRequestActionProps {
 }
 
 const BulkRequestAction: React.FC<BulkRequestActionProps> = ({request, revalidatePath}) => {
-    console.log(revalidatePath,'path on sub')
     const addTokenBulk = async (outlet_id: number, requestId: number, quantity: number) => {
         try {
             await addOutletTokenStatus(outlet_id, requestId, quantity,revalidatePath);

@@ -30,7 +30,6 @@ const Page = async ({
     let requests;
     try {
         requests = await getOutletBulkRequests(id);
-        console.log(requests)
     } catch (e) {
 
     }

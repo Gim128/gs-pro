@@ -37,7 +37,6 @@ export const fetchAllDistricts = async () => {
         }
 
         const result = await response.json();
-        console.log(result, 'Result');
         return result.data;
     } catch (e) {
         console.error('Error fetching districts:', e);
@@ -182,7 +181,6 @@ export const addOutletTokenStatus = async (outletId:number,requestId:number,avai
         }
 
         const result = await response.json();
-        console.log(path,'thsi is the path on server')
         revalidatePath(path)
         return result; // Resolve with the data
     } catch (e) {
