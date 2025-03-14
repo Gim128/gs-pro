@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,20 +11,76 @@ import { ToastAction } from "@/components/ui/toast";
 import { toast } from "@/hooks/use-toast";
 import { useStore } from "@/lib/store";
 import { validateEmail, validatePhoneNumber } from "@/app/api/validation"; // Import validation functions
+import { jwtDecode } from 'jwt-decode';
+import { useSession } from 'next-auth/react';
+import { getEmployee } from '@/app/actions/employee-actions';
+import { format } from 'date-fns';
+import { fetchAllDistricts } from '@/app/actions/outlet-actions';
+import { Popover, PopoverContent, PopoverTrigger } from '@radix-ui/react-popover';
+import { cn } from '@/lib/utils';
+import { Check, ChevronsUpDown, Command } from 'lucide-react';
+import { CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+
 
 const Profile = () => {
 
     const { updateUserProfile } = useStore(state => state);
     const userProfileSlice = useStore(state => state.userProfileSlice);
+    const { data: session, update } = useSession();
+    const [districts, setDistricts] = useState<{ label: string; value: string }[]>([]);
+    const [user, setUser] = useState(null);
+    const [open, setOpen] = useState(false)
 
     useEffect(() => {
-        useStore.persist?.rehydrate();
-        const dob = userProfileSlice.currentUser.dob ? new Date(userProfileSlice.currentUser.dob) : undefined;
-        form.reset({
-            ...userProfileSlice.currentUser,
-            dob: isNaN(dob?.getTime()) ? undefined : dob,
-        });
-    }, []);
+        if (session) {
+            let decodedToken = jwtDecode(session?.accessToken);
+            getEmp(decodedToken.userId);
+            void getAllDistricts();
+        }
+    }, [session]);
+
+    // useEffect(() => {
+    //     useStore.persist?.rehydrate();
+    //     const dob = userProfileSlice.currentUser.dob ? new Date(userProfileSlice.currentUser.dob) : undefined;
+    //     form.reset({
+    //         ...userProfileSlice.currentUser,
+    //         dob: isNaN(dob?.getTime()) ? undefined : dob,
+    //     });
+    // }, []);
+
+    const getEmp = async (id: number) => {
+        try {
+            const res = await getEmployee(id);
+            console.log(res);
+            setUser(res);
+            form.setValue("username", res?.username);
+            form.setValue("firstname", res?.firstname);
+            form.setValue("lastname", res?.lastname);
+            form.setValue("email", res?.email);
+            form.setValue("phone_number", res?.phone_number);
+            form.setValue("password", res?.password);
+            form.setValue("district", res?.district_id ?? "");
+
+        } catch (error) {
+            console.log(error);
+
+        }
+
+    }
+
+    const getAllDistricts = async () => {
+        try {
+            const result = await fetchAllDistricts(); // Ensure result is an array of {label, value}
+            setDistricts(result.map((d: any) => ({ label: d.name, value: d.id }))); // Transform API response
+        } catch (e) {
+            toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: "There was a problem with fetching districts.",
+                action: <ToastAction altText="Try again">Try again</ToastAction>,
+            })
+        }
+    };
 
     const UserProfileSchema = z.object({
         id: z.number().optional(),
@@ -36,14 +92,8 @@ const Profile = () => {
             (arg) => (typeof arg === "string" ? new Date(arg) : arg),
             z.date().refine((date) => !isNaN(date.getTime()), "Invalid date")
         ),
-        email: z.string().email("Invalid email format").refine(async (email) => {
-            const validation = await validateEmail(email);
-            return validation === true;  // returns true if valid, else string error message
-        }, "Email is already in use or invalid"),
-        phone_number: z.string().regex(/^\d{10,15}$/, "Invalid phone number").refine(async (phoneNumber) => {
-            const validation = await validatePhoneNumber(phoneNumber);
-            return validation === true;
-        }, "Phone number is already in use or invalid"),
+        email: z.string().email("Invalid email format"),
+        phone_number: z.string().regex(/^\d{10,15}$/, "Invalid phone number"),
         password: z.string().optional(),
         district: z.string().min(1, "District is required"),
     });
@@ -53,16 +103,16 @@ const Profile = () => {
     const form = useForm<UserProfileForm>({
         resolver: zodResolver(UserProfileSchema),
         defaultValues: {
-            id: userProfileSlice.currentUser.id,
-            username: userProfileSlice.currentUser.username,
-            firstname: userProfileSlice.currentUser.firstname,
-            lastname: userProfileSlice.currentUser.lastname,
-            user_type_id: userProfileSlice.currentUser.user_type_id,
-            dob: new Date(userProfileSlice.currentUser.dob),
-            email: userProfileSlice.currentUser.email,
-            phone_number: userProfileSlice.currentUser.phone_number,
+            id: user?.id,
+            username: user?.username,
+            firstname: user?.firstname,
+            lastname: user?.lastname,
+            user_type_id: user?.user_type_id,
+            dob: new Date(user?.dob),
+            email: user?.email,
+            phone_number: user?.phone_number,
             password: "",
-            district: ""
+            districtId: user?.district_id ?? ""
         }
     });
 
@@ -172,15 +222,70 @@ const Profile = () => {
                                 <FormMessage />
                             </FormItem>
                         )} />
-                        <FormField control={form.control} name="district" render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>District</FormLabel>
-                                <FormControl>
-                                    <Input type="text" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )} />
+                        <FormField
+                            control={form.control}
+                            name="districtId"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col space-y-3.5">
+                                    <FormLabel>District</FormLabel>
+                                    <Popover open={open} onOpenChange={setOpen}>
+                                        <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                    variant="outline"
+                                                    role="combobox"
+                                                    className={cn(
+                                                        "justify-between",
+                                                        !field.value && "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    {field.value
+                                                        ? districts.find((district) => district.value === field.value)?.label
+                                                        : "Select district"}
+                                                    <ChevronsUpDown className="opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="p-0 w-[--radix-popover-trigger-width]">
+                                            <Command>
+                                                <CommandInput placeholder="Search district..." className="h-9" />
+                                                <CommandList>
+                                                    {districts.length === 0 ? (
+                                                        <CommandEmpty>No districts found.</CommandEmpty>
+                                                    ) : (
+                                                        <CommandGroup>
+                                                            {districts.map((district) => (
+                                                                <CommandItem
+                                                                    value={district.label}
+                                                                    key={district.value}
+                                                                    onSelect={() => {
+                                                                        console.log("on select fired")
+                                                                        form.setValue("districtId", district.value);
+                                                                        form.trigger(["districtId"])
+                                                                        setOpen(false)
+                                                                    }}
+                                                                >
+                                                                    {district.label}
+                                                                    <Check
+                                                                        className={cn(
+                                                                            "ml-auto",
+                                                                            district.value === field.value
+                                                                                ? "opacity-100"
+                                                                                : "opacity-0"
+                                                                        )}
+                                                                    />
+                                                                </CommandItem>
+                                                            ))}
+                                                        </CommandGroup>
+                                                    )}
+                                                </CommandList>
+                                            </Command>
+                                        </PopoverContent>
+                                    </Popover>
+                                    <FormMessage className='text-xs' />
+                                </FormItem>
+                            )}
+                        />
 
                     </div>
 

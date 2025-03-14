@@ -21,7 +21,9 @@ const Page = () => {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Profile/>
+                    <SessionProvider>
+                        <Profile />
+                    </SessionProvider>
                 </CardContent>
             </Card>
         </section>
