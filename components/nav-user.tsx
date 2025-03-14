@@ -30,7 +30,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import {doLogout} from "@/app/actions/auth-actions";
-import { useRouter } from "next/navigation";
 
 export function NavUser({
   user,
@@ -42,7 +41,6 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
-  const router = useRouter(); 
 
   return (
     <SidebarMenu>
@@ -91,7 +89,7 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => router.push("/dashboard/profile")}>
+              <DropdownMenuItem>
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
